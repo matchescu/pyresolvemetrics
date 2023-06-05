@@ -1,3 +1,4 @@
+import math
 from typing import Callable, Any, Iterable
 
 from abstractions.data_structures import Clustering
@@ -93,3 +94,22 @@ def pairwise_f1(result: Clustering, standard: Clustering) -> list[float]:
         ret.append(2 * (precision * recall) / (precision + recall))
 
     return ret
+
+
+def h(x: float, item_count: int) -> float:
+    fraction = x / item_count
+    return fraction * math.log(fraction)
+
+
+def variation_of_information(result: Clustering, standard: Clustering) -> list[float]:
+    common_length = min(len(result), len(standard))
+    vi = []
+    for i in range(common_length):
+        distinct_standard_items = len(set(item for cluster in standard.clustered_rows[i] for item in cluster))
+
+        def vi_cost_function(x: float, y: float) -> float:
+            return h(x+y, distinct_standard_items) - h(x, distinct_standard_items) - h(y, distinct_standard_items)
+        vi.append(
+            _slice(result.clustered_rows[i], standard.clustered_rows[i], vi_cost_function, vi_cost_function)
+        )
+    return vi

@@ -35,7 +35,7 @@ def test_basic_merge_distance_sums_pairwise_distances(gold_standard):
     entity_resolution_result = Clustering(
         feature_info=[],
         clustered_rows=[
-            (("a"), ("b"), ("c"), ("d"), ("e", "f", "g", "h", "i", "j")),
+            ("a", "b", "c", "d", ("e", "f", "g", "h", "i", "j")),
             (("a", "b"), ("c", "d"), ("e", "f", "g"), ("h", "i", "j")),
         ]
     )
