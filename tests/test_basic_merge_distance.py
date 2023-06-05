@@ -4,22 +4,11 @@ from abstractions.data_structures import Clustering
 from entity_resolution_measurements import basic_merge_distance
 
 
-@pytest.fixture
-def gold_standard():
-    return Clustering(
-        feature_info=[],
-        clustered_rows=[
-            (("a", "b"), ("c", "d"), ("e", "f", "g", "h", "i", "j")),
-            (("a", "b"), ("c", "d"), ("e", "f", "g", "h", "i", "j")),
-        ],
-    )
-
-
 def result_one():
     return Clustering(
         feature_info=[],
         clustered_rows=[
-            (("a"), ("b"), ("c"), ("d"), ("e", "f", "g", "h", "i", "j"))
+            ("a", "b", "c", "d", ("e", "f", "g", "h", "i", "j"))
         ]
     )
 
