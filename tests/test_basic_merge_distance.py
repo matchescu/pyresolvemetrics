@@ -23,6 +23,14 @@ def test_gmd_split_happy_flow(gold_standard, actual_result, expected_bmd):
     assert result == expected_bmd
 
 
+def test_gmd_split_repeating_items():
+    standard = [("a", "b"), ("a", "b", "c")]
+
+    result = gmd_slice(standard, standard, one, one)
+
+    assert result == 0
+
+
 def test_gmd_split_item_in_result_not_in_standard(gold_standard):
     with pytest.raises(ValueError) as err_proxy:
         gmd_slice([("f", "g"), "m", ("a", "b")], gold_standard, one, one)

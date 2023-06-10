@@ -1,26 +1,37 @@
 import math
-from typing import Callable, Any, Iterable
+from typing import Callable, Any, Iterable, Generator
 
 from abstractions.data_structures import Clustering
 from abstractions.protocols import SizedIterable
 
 
-def _build_cluster_map(record: Iterable[SizedIterable]) -> tuple[dict[Any, int], list[int]]:
+def _build_cluster_map(record: Iterable[SizedIterable]) -> tuple[dict[Any, set[int]], list[int]]:
     cluster_map = {}
     cluster_sizes = []
     for i, cluster in enumerate(record):
         for j, token in enumerate(cluster):
-            cluster_map[token] = i
+            if token in cluster_map:
+                cluster_map[token].add(i)
+            else:
+                cluster_map[token] = {i}
         cluster_sizes.append(len(cluster))
     return cluster_map, cluster_sizes
 
 
-def _safe_inc(obj: dict, key: Any) -> dict:
-    if key in obj:
-        obj[key] += 1
-    else:
-        obj[key] = 1
+def _safe_inc(obj: dict[int, int], key: set[int]) -> dict:
+    for idx in key:
+        obj[idx] = obj.get(idx, 0) + 1
     return obj
+
+
+def _build_equivalent_partition(record: Iterable[SizedIterable]) -> Generator[SizedIterable, None, None]:
+    union = set()
+    for cluster in record:
+        cluster_set = set(cluster)
+        cluster_unique = cluster_set - union
+        union |= cluster_set
+        if len(cluster_unique) > 0:
+            yield list(cluster_unique)
 
 
 def gmd_slice(
@@ -51,6 +62,10 @@ def gmd_slice(
     (and the cost of each of those operations, as specified by the appropriate
     params) must be performed to get from ``result`` to ``standard``.
     """
+
+    result = list(_build_equivalent_partition(result))
+    standard = list(_build_equivalent_partition(standard))
+
     res_map, res_sizes = _build_cluster_map(result)
     cost = 0
 
