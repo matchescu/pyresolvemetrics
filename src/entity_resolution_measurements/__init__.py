@@ -1,4 +1,4 @@
-from ._gmd import basic_merge_distance, pairwise_f1, variation_of_information
+from ._gmd import gmd_slice, basic_merge_distance, pairwise_f1, variation_of_information
 
 
-__all__ = ["basic_merge_distance", "pairwise_f1", "variation_of_information"]
+__all__ = ["gmd_slice", "basic_merge_distance", "pairwise_f1", "variation_of_information"]

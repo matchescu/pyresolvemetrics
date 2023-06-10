@@ -3,6 +3,10 @@ from entity_resolution_measurements import pairwise_f1
 
 
 def test_pairwise_f1_score_on_single_record(gold_standard):
+    standard = Clustering(
+        feature_info=[],
+        clustered_rows=[gold_standard]*4,
+    )
     er_result = Clustering(
         feature_info=[],
         clustered_rows=[
@@ -12,7 +16,7 @@ def test_pairwise_f1_score_on_single_record(gold_standard):
             (("a", "b"), ("c", "d"), ("e", "f", "g", "h", "i", "j")),
         ]
     )
-    result = pairwise_f1(er_result, gold_standard)
+    result = pairwise_f1(er_result, standard)
 
     assert result == [
         0.0,
