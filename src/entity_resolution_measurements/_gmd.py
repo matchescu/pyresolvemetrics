@@ -24,14 +24,15 @@ def _safe_inc(obj: dict[int, int], key: set[int]) -> dict:
     return obj
 
 
-def _build_equivalent_partition(record: Iterable[SizedIterable]) -> Generator[SizedIterable, None, None]:
+def _partition(record: Iterable[SizedIterable]) -> Generator[SizedIterable, None, None]:
     union = set()
     for cluster in record:
-        cluster_set = set(cluster)
-        cluster_unique = cluster_set - union
-        union |= cluster_set
-        if len(cluster_unique) > 0:
-            yield list(cluster_unique)
+        yield [
+            value
+            for value in cluster
+            if value not in union
+        ]
+        union |= set(cluster)
 
 
 def gmd_slice(
@@ -63,8 +64,8 @@ def gmd_slice(
     params) must be performed to get from ``result`` to ``standard``.
     """
 
-    result = list(_build_equivalent_partition(result))
-    standard = list(_build_equivalent_partition(standard))
+    result = list(_partition(result))
+    standard = list(_partition(standard))
 
     res_map, res_sizes = _build_cluster_map(result)
     cost = 0
