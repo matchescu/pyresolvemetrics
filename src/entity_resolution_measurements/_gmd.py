@@ -1,11 +1,11 @@
 import math
-from typing import Callable, Any, Iterable, Generator
+from typing import Callable, Any, Iterable
 
-from abstractions.data_structures import Clustering
-from abstractions.protocols import SizedIterable
+from abstractions.data_structures import Clustering, extract_partitions
+from abstractions.protocols import IndexedIterable
 
 
-def _build_cluster_map(record: Iterable[SizedIterable]) -> tuple[dict[Any, set[int]], list[int]]:
+def _build_cluster_map(record: Iterable[IndexedIterable]) -> tuple[dict[Any, set[int]], list[int]]:
     cluster_map = {}
     cluster_sizes = []
     for i, cluster in enumerate(record):
@@ -24,20 +24,9 @@ def _safe_inc(obj: dict[int, int], key: set[int]) -> dict:
     return obj
 
 
-def _partition(record: Iterable[SizedIterable]) -> Generator[SizedIterable, None, None]:
-    union = set()
-    for cluster in record:
-        yield [
-            value
-            for value in cluster
-            if value not in union
-        ]
-        union |= set(cluster)
-
-
 def gmd_slice(
-    result: Iterable[SizedIterable],
-    standard: Iterable[SizedIterable],
+    result: Iterable[IndexedIterable],
+    standard: Iterable[IndexedIterable],
     split_cost_func: Callable[[int, int], float],
     merge_cost_func: Callable[[int, int], float],
 ) -> float:
@@ -63,9 +52,8 @@ def gmd_slice(
     (and the cost of each of those operations, as specified by the appropriate
     params) must be performed to get from ``result`` to ``standard``.
     """
-
-    result = list(_partition(result))
-    standard = list(_partition(standard))
+    result = extract_partitions(result)
+    standard = extract_partitions(standard)
 
     res_map, res_sizes = _build_cluster_map(result)
     cost = 0
