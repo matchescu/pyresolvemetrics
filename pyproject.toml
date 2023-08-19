@@ -4,7 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["Andrei Olar <andrei.olar@dpgmedia.nl>"]
 readme = "README.md"
-packages = [{include = "entity_resolution_measurements"}]
+packages = [{include = "matchescu", from="src"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"

@@ -1,11 +1,10 @@
 import math
 from typing import Callable, Any, Iterable
 
-from abstractions.data_structures import Clustering, extract_partitions
-from abstractions.protocols import IndexedIterable
+from matchescu.types import Record
 
 
-def _build_cluster_map(record: Iterable[IndexedIterable]) -> tuple[dict[Any, set[int]], list[int]]:
+def _build_cluster_map(record: Iterable[Record]) -> tuple[dict[Any, set[int]], list[int]]:
     cluster_map = {}
     cluster_sizes = []
     for i, cluster in enumerate(record):
@@ -25,8 +24,8 @@ def _safe_inc(obj: dict[int, int], key: set[int]) -> dict:
 
 
 def gmd_slice(
-    result: Iterable[IndexedIterable],
-    standard: Iterable[IndexedIterable],
+    result: Iterable[Record],
+    standard: Iterable[Record],
     split_cost_func: Callable[[int, int], float],
     merge_cost_func: Callable[[int, int], float],
 ) -> float:
@@ -52,9 +51,6 @@ def gmd_slice(
     (and the cost of each of those operations, as specified by the appropriate
     params) must be performed to get from ``result`` to ``standard``.
     """
-    result = extract_partitions(result)
-    standard = extract_partitions(standard)
-
     res_map, res_sizes = _build_cluster_map(result)
     cost = 0
 
@@ -91,7 +87,7 @@ def gmd_slice(
     return cost
 
 
-def basic_merge_distance(result: Clustering, standard: Clustering) -> float:
+def basic_merge_distance(result, standard) -> float:
     common_length = min(len(result), len(standard))
     cumulated_merge_distance = 0
     for i in range(common_length):
@@ -113,7 +109,7 @@ def _denormalize(clusters: Iterable[tuple]) -> Iterable[tuple]:
     ]
 
 
-def pairwise_f1(result: Clustering, standard: Clustering) -> list[float]:
+def pairwise_f1(result, standard) -> list[float]:
     common_length = min(len(result), len(standard))
     ret = []
 
@@ -144,7 +140,7 @@ def h(x: float, item_count: int) -> float:
     return fraction * math.log(fraction)
 
 
-def variation_of_information(result: Clustering, standard: Clustering) -> list[float]:
+def variation_of_information(result, standard) -> list[float]:
     common_length = min(len(result), len(standard))
     vi = []
     for i in range(common_length):
