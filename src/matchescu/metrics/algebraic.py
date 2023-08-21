@@ -101,8 +101,35 @@ def pair_recall(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> flo
     return len(gt_pairs & res_pairs) / (len(res_pairs))
 
 
-def pairwise_comparison_measure(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> float:
+def pair_comparison_measure(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> float:
     pp = pair_precision(ground_truth, result)
     pr = pair_recall(ground_truth, result)
 
     return (2 * pp * pr) / (pp + pr)
+
+
+def _cluster(input_data: list[set[tuple]]) -> Generator[tuple[tuple], None, None]:
+    return (
+        tuple(v for v in partition_class) for partition_class in input_data
+    )
+
+
+def cluster_precision(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> float:
+    gt_cluster = set(_cluster(ground_truth))
+    res_cluster = set(_cluster(result))
+
+    return len(gt_cluster & res_cluster) / len(gt_cluster)
+
+
+def cluster_recall(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> float:
+    gt_cluster = set(_cluster(ground_truth))
+    res_cluster = set(_cluster(result))
+
+    return len(gt_cluster & res_cluster) / len(res_cluster)
+
+
+def cluster_comparison_measure(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> float:
+    cp = cluster_precision(ground_truth, result)
+    cr = cluster_recall(ground_truth, result)
+
+    return (2 * cp * cr) / (cp + cr)
