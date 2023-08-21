@@ -1,5 +1,6 @@
+import itertools
 from math import sqrt
-from typing import Iterable
+from typing import Iterable, Generator
 
 from numpy import ndarray, zeros, sum, vectorize
 
@@ -80,3 +81,28 @@ def adjusted_rand_index(ground_truth: list[set[tuple]], result: list[set[tuple]]
     qty = ((y + x) * (z + x)) / (x + y + z + w)
 
     return (x - qty) / (((y + z + 2 * x) / 2) - qty)
+
+
+def _pairs(input_data: list[set[tuple]]) -> Generator[tuple[tuple], None, None]:
+    for partition_class in input_data:
+        for pair in itertools.combinations(partition_class, 2):
+            yield pair
+
+
+def pair_precision(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> float:
+    gt_pairs = set(_pairs(ground_truth))
+    res_pairs = set(_pairs(result))
+    return len(gt_pairs & res_pairs) / (len(gt_pairs))
+
+
+def pair_recall(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> float:
+    gt_pairs = set(_pairs(ground_truth))
+    res_pairs = set(_pairs(result))
+    return len(gt_pairs & res_pairs) / (len(res_pairs))
+
+
+def pairwise_comparison_measure(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> float:
+    pp = pair_precision(ground_truth, result)
+    pr = pair_recall(ground_truth, result)
+
+    return (2 * pp * pr) / (pp + pr)
