@@ -49,43 +49,41 @@ def gmd_slice(ground_truth: Iterable[Record], result: Iterable[Record], split_co
     res_map = {}
     res_sizes = {}
     for idx, record in enumerate(result):
-        size = 0
-        val = tuple(_flatten_record_values(record))
-        res_map[val] = idx
-        size += 1
-        res_sizes[idx] = size
+        for cluster in record:
+            res_map[cluster] = idx
+        res_sizes[idx] = res_sizes.get(idx, 0) + len(record)
 
     total_cost = 0
 
     for record in ground_truth:
         overlap_map = {}
-        flattened_record = tuple(_flatten_record_values(record))
-        if flattened_record not in res_map:
-            continue
-        record_index = res_map[flattened_record]
-        if record_index not in overlap_map:
-            overlap_map[record_index] = 0
-        overlap_map[record_index] += 1
+        for cluster in record:
+            if cluster not in res_map:
+                continue
+            record_index = res_map[cluster]
+            if record_index not in overlap_map:
+                overlap_map[record_index] = 0
+            overlap_map[record_index] += 1
 
         record_cost = 0
-        total_tokens = 0
-        for k, overlapped_item_count in overlap_map.items():
+        total_overlapping_items = 0
+        for i, count in overlap_map.items():
             # count a split if the number of items in the k-th cluster in the result is larger than the overlap
-            if res_sizes[k] > overlapped_item_count:
+            if res_sizes[i] > count:
                 record_cost += split_cost_func(
-                    overlapped_item_count, res_sizes[k] - overlapped_item_count
+                    count, res_sizes[i] - count
                 )
 
             # remove the overlap from the k-th cluster in the result
-            res_sizes[k] -= overlapped_item_count
+            res_sizes[i] -= count
 
-            if total_tokens != 0:
+            if total_overlapping_items != 0:
                 # the overlap_map always has only one element when result is included in standard
                 # all tokens in the result cluster will be in the same standard cluster
                 record_cost += merge_cost_func(
-                    overlapped_item_count, total_tokens
+                    count, total_overlapping_items
                 )
-            total_tokens += overlapped_item_count
+            total_overlapping_items += count
         total_cost += record_cost
 
     return total_cost
