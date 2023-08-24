@@ -95,12 +95,12 @@ def basic_merge_distance(ground_truth: list[tuple], result: list[tuple]) -> floa
     return gmd_slice(ground_truth, result, lambda x, y: 1, lambda x, y: 1)
 
 
-def _denormalize(records: Iterable[Record]) -> Iterable[Any]:
-    return [
-        value if isinstance(value, (list, dict, tuple, set)) else [value]
+def _compute_partition_of_single_records(records: Iterable[Record]) -> Iterable[Any]:
+    ordered_set = {
+        record: None
         for record in records
-        for value in record
-    ]
+    }
+    return [item for item in ordered_set]
 
 
 def _product(x, y):
@@ -111,28 +111,22 @@ def _zero(*_):
     return 0
 
 
-def _denorm_precision(ground_truth: list[tuple], result: list[tuple]) -> float:
-    gt_denormalized = _denormalize(ground_truth)
-    return gmd_slice(gt_denormalized, result, _product, _zero)
-
-
-def _denorm_recall(ground_truth: list[tuple]) -> float:
-    gt_denormalized = _denormalize(ground_truth)
-    return gmd_slice(ground_truth, gt_denormalized, _zero, _product)
-
-
 def pairwise_precision(ground_truth: list[tuple], result: list[tuple]) -> float:
-    denorm_precision = _denorm_precision(ground_truth, result)
-    if denorm_precision == 0:
-        return 0
-    return 1 - (gmd_slice(ground_truth, result, _product, _zero) / denorm_precision)
+    gt_denormalized = _compute_partition_of_single_records(ground_truth)
+    return 1 - (
+        gmd_slice(ground_truth, result, _product, _zero)
+        /
+        gmd_slice(gt_denormalized, result, _product, _zero)
+    )
 
 
 def pairwise_recall(ground_truth: list[tuple], result: list[tuple]) -> float:
-    denorm_recall = _denorm_recall(ground_truth)
-    if denorm_recall == 0:
-        return 0
-    return 1 - (gmd_slice(ground_truth, result, _zero, _product) / denorm_recall)
+    gt_denormalized = _compute_partition_of_single_records(ground_truth)
+    return 1 - (
+        gmd_slice(ground_truth, result, _zero, _product)
+        /
+        gmd_slice(ground_truth, gt_denormalized, _zero, _product)
+    )
 
 
 def pairwise_f1(ground_truth: list[tuple], result: list[tuple]) -> float:
