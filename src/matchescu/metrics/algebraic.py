@@ -98,12 +98,16 @@ def pair_precision(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> 
 def pair_recall(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> float:
     gt_pairs = set(_pairs(ground_truth))
     res_pairs = set(_pairs(result))
+    if len(res_pairs) == 0:
+        return 0.0
     return len(gt_pairs & res_pairs) / (len(res_pairs))
 
 
 def pair_comparison_measure(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> float:
     pp = pair_precision(ground_truth, result)
     pr = pair_recall(ground_truth, result)
+    if pp + pr == 0:
+        return 0.0
 
     return (2 * pp * pr) / (pp + pr)
 

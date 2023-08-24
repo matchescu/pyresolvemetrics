@@ -50,29 +50,29 @@ def gmd_slice(ground_truth: Iterable[Record], result: Iterable[Record], split_co
     res_sizes = {}
     for idx, record in enumerate(result):
         size = 0
-        for value in _flatten_record_values(record):
-            res_map[value] = idx
-            size += 1
+        val = tuple(_flatten_record_values(record))
+        res_map[val] = idx
+        size += 1
         res_sizes[idx] = size
 
-    cost = 0
+    total_cost = 0
 
     for record in ground_truth:
         overlap_map = {}
-        for token in _flatten_record_values(record):
-            if token not in res_map:
-                continue
-            record_index = res_map[token]
-            if record_index not in overlap_map:
-                overlap_map[record_index] = 0
-            overlap_map[record_index] += 1
+        flattened_record = tuple(_flatten_record_values(record))
+        if flattened_record not in res_map:
+            continue
+        record_index = res_map[flattened_record]
+        if record_index not in overlap_map:
+            overlap_map[record_index] = 0
+        overlap_map[record_index] += 1
 
-        standard_cluster_cost = 0
+        record_cost = 0
         total_tokens = 0
         for k, overlapped_item_count in overlap_map.items():
             # count a split if the number of items in the k-th cluster in the result is larger than the overlap
             if res_sizes[k] > overlapped_item_count:
-                standard_cluster_cost += split_cost_func(
+                record_cost += split_cost_func(
                     overlapped_item_count, res_sizes[k] - overlapped_item_count
                 )
 
@@ -82,13 +82,13 @@ def gmd_slice(ground_truth: Iterable[Record], result: Iterable[Record], split_co
             if total_tokens != 0:
                 # the overlap_map always has only one element when result is included in standard
                 # all tokens in the result cluster will be in the same standard cluster
-                standard_cluster_cost += merge_cost_func(
+                record_cost += merge_cost_func(
                     overlapped_item_count, total_tokens
                 )
             total_tokens += overlapped_item_count
-        cost += standard_cluster_cost
+        total_cost += record_cost
 
-    return cost
+    return total_cost
 
 
 def basic_merge_distance(ground_truth: list[tuple], result: list[tuple]) -> float:
@@ -113,20 +113,27 @@ def _zero(*_):
 
 def pairwise_precision(ground_truth: list[tuple], result: list[tuple]) -> float:
     gt_denormalized = _compute_partition_of_single_records(ground_truth)
-    return 1 - (
-        gmd_slice(ground_truth, result, _product, _zero)
-        /
-        gmd_slice(gt_denormalized, result, _product, _zero)
-    )
+    bmd = gmd_slice(ground_truth, result, _product, _zero)
+    denorm_precision = gmd_slice(gt_denormalized, result, _product, _zero)
+    if bmd == 0:
+        return 1.0
+    if denorm_precision == 0:
+        return 0.0
+
+    return 1 - (bmd / denorm_precision)
 
 
 def pairwise_recall(ground_truth: list[tuple], result: list[tuple]) -> float:
     gt_denormalized = _compute_partition_of_single_records(ground_truth)
-    return 1 - (
-        gmd_slice(ground_truth, result, _zero, _product)
-        /
-        gmd_slice(ground_truth, gt_denormalized, _zero, _product)
-    )
+    bmd = gmd_slice(ground_truth, result, _zero, _product)
+    denorm_recall = gmd_slice(ground_truth, gt_denormalized, _zero, _product)
+
+    if bmd == 0:
+        return 1.0
+    if denorm_recall == 0:
+        return 0.0
+
+    return 1 - (bmd / denorm_recall)
 
 
 def pairwise_f1(ground_truth: list[tuple], result: list[tuple]) -> float:
