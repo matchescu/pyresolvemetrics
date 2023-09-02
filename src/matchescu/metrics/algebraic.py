@@ -135,5 +135,7 @@ def cluster_recall(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> 
 def cluster_comparison_measure(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> float:
     cp = cluster_precision(ground_truth, result)
     cr = cluster_recall(ground_truth, result)
+    if cp + cr == 0:
+        return 0.0
 
     return (2 * cp * cr) / (cp + cr)
