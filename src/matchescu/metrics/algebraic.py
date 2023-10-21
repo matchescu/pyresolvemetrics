@@ -2,7 +2,8 @@ import itertools
 from math import sqrt
 from typing import Iterable, Generator
 
-from numpy import ndarray, zeros, sum, vectorize
+import numpy.dtypes
+from numpy import ndarray, zeros, sum, vectorize, dtype
 
 
 def extract_algebraic_result_model(input_data: Iterable[Iterable[Iterable]]) -> list[set[tuple]]:
@@ -51,6 +52,8 @@ def _compute_total_number_of_elements(ground_truth: list[set[tuple]]) -> int:
 
 def twi(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> float:
     partition_overlap = _compute_partition_overlap(ground_truth, result)
+    if len(partition_overlap) == 0:
+        return 0
     return sqrt(len(ground_truth) * len(result)) / len(partition_overlap)
 
 
@@ -61,23 +64,29 @@ def _compute_rand_index_components(
     si = list(map(len, ground_truth))
     sj = list(map(len, result))
     smn = _compute_total_number_of_elements(ground_truth)
+    try:
+        cn2 = vectorize(_compute_cn2, otypes=numpy.double)
 
-    cn2 = vectorize(_compute_cn2)
+        x = sum(cn2(intersection_matrix))
+        y = sum(cn2(si))
+        z = sum(cn2(sj))
 
-    x = sum(cn2(intersection_matrix))
-    y = sum(cn2(si))
-    z = sum(cn2(sj))
-
-    return x, y, z, cn2(smn) - x - y - z
+        return x, y, z, cn2(smn) - x - y - z
+    except ValueError:
+        return 0, 0, 0, 0
 
 
 def rand_index(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> float:
     x, y, z, w = _compute_rand_index_components(ground_truth, result)
+    if (x + y + z + w) == 0:
+        return 0
     return (x + w) / (x + y + z + w)
 
 
 def adjusted_rand_index(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> float:
     x, y, z, w = _compute_rand_index_components(ground_truth, result)
+    if (x + y + z + w) == 0:
+        return 0
     qty = ((y + x) * (z + x)) / (x + y + z + w)
 
     return (x - qty) / (((y + z + 2 * x) / 2) - qty)
@@ -92,15 +101,16 @@ def _pairs(input_data: list[set[tuple]]) -> Generator[tuple[tuple], None, None]:
 def pair_precision(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> float:
     gt_pairs = set(_pairs(ground_truth))
     res_pairs = set(_pairs(result))
-    return len(gt_pairs & res_pairs) / (len(gt_pairs))
+    if len(res_pairs) == 0:
+        # no pairs were retrieved -> precision = 0
+        return 0.0
+    return len(gt_pairs & res_pairs) / (len(res_pairs))
 
 
 def pair_recall(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> float:
     gt_pairs = set(_pairs(ground_truth))
     res_pairs = set(_pairs(result))
-    if len(res_pairs) == 0:
-        return 0.0
-    return len(gt_pairs & res_pairs) / (len(res_pairs))
+    return len(gt_pairs & res_pairs) / (len(gt_pairs))
 
 
 def pair_comparison_measure(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> float:
@@ -121,15 +131,18 @@ def _cluster(input_data: list[set[tuple]]) -> Generator[tuple[tuple], None, None
 def cluster_precision(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> float:
     gt_cluster = set(_cluster(ground_truth))
     res_cluster = set(_cluster(result))
+    if len(res_cluster) == 0:
+        # if no clusters were retrieved, the precision is zero
+        return 0
 
-    return len(gt_cluster & res_cluster) / len(gt_cluster)
+    return len(gt_cluster & res_cluster) / len(res_cluster)
 
 
 def cluster_recall(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> float:
     gt_cluster = set(_cluster(ground_truth))
     res_cluster = set(_cluster(result))
 
-    return len(gt_cluster & res_cluster) / len(res_cluster)
+    return len(gt_cluster & res_cluster) / len(gt_cluster)
 
 
 def cluster_comparison_measure(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> float:

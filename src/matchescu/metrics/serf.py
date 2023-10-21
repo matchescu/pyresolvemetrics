@@ -136,6 +136,8 @@ def pairwise_recall(result: list[tuple], standard: list[tuple]) -> float:
 def pairwise_f1(result: list[tuple], standard: list[tuple]) -> float:
     precision = pairwise_precision(result, standard)
     recall = pairwise_recall(result, standard)
+    if precision + recall == 0:
+        return 0
     return 2 * (precision * recall) / (precision + recall)
 
 
