@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "entity-resolution-measurements"
-version = "0.1.0"
-description = ""
+name = "er-metrics"
+version = "0.2.0"
+description = "Entity resolution metrics"
 authors = ["Andrei Olar <andrei.olar@dpgmedia.nl>"]
 readme = "README.md"
 packages = [{include = "matchescu", from="src"}]
