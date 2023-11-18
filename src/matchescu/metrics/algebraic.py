@@ -6,16 +6,13 @@ import numpy as np
 
 
 def twi(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> float:
-    numerator = 0
-    denominator = 0
-
+    numerator = len(ground_truth) * len(result)
+    overlap = 0
     for gt_set in ground_truth:
         for res_set in result:
             intersection = gt_set & res_set
-
-            numerator += len(intersection) ** 2
-            denominator += len(gt_set) * len(res_set)
-
+            overlap += len(intersection)
+    denominator = overlap**2
     return numerator / denominator if denominator != 0 else 0
 
 
@@ -31,11 +28,15 @@ def _cluster_pairs(cluster: set[tuple]) -> Generator[tuple, None, None]:
     yield from itertools.combinations(cluster, 2)
 
 
-def rand_index(ground_truth: list[set], resolution: list[set]) -> float:
+def _comb_n_2(value: int) -> int:
+    return (value * (value - 1)) // 2
+
+
+def rand_index(ground_truth: list[set], result: list[set]) -> float:
     a, b, c, d = 0, 0, 0, 0
 
     for gt_cluster in ground_truth:
-        for er_cluster in resolution:
+        for er_cluster in result:
             gt_cluster_pairs = set(_cluster_pairs(gt_cluster))
             er_cluster_pairs = set(_cluster_pairs(er_cluster))
             same_pair_count = len(gt_cluster_pairs & er_cluster_pairs)
@@ -47,10 +48,6 @@ def rand_index(ground_truth: list[set], resolution: list[set]) -> float:
             d += only_gt_pair_count + only_er_pair_count
 
     return (a + d) / (a + b + c + d)
-
-
-def _comb_n_2(value: int) -> int:
-    return (value * (value - 1)) // 2
 
 
 def adjusted_rand_index(
