@@ -55,9 +55,7 @@ def rand_index(ground_truth: list[set], result: list[set]) -> float:
     return (tp + tn) / (tp + tn + fp + fn)
 
 
-def adjusted_rand_index(
-    ground_truth: list[set[tuple]], result: list[set[tuple]]
-) -> float:
+def adjusted_rand_index(ground_truth: list[set], result: list[set]) -> float:
     initial_data_size = reduce(
         lambda count, cluster: count + len(cluster), ground_truth, 0
     )
