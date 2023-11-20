@@ -33,21 +33,26 @@ def _comb_n_2(value: int) -> int:
 
 
 def rand_index(ground_truth: list[set], result: list[set]) -> float:
-    a, b, c, d = 0, 0, 0, 0
+    contingency_table = np.array(
+        [
+            [len(gt_cluster & er_cluster) for er_cluster in result]
+            for gt_cluster in ground_truth
+        ],
+        dtype=np.int32,
+    )
+    if len(np.shape(contingency_table)) == 1:
+        return 0
+    comb_2 = np.vectorize(_comb_n_2)
+    tp_fp = np.sum(comb_2(np.sum(contingency_table, axis=0)))
+    tp_fn = np.sum(comb_2(np.sum(contingency_table, axis=1)))
+    tp = np.sum(comb_2(contingency_table))
+    fp = tp_fp - tp
+    fn = tp_fn - tp
+    tn = _comb_n_2(np.sum(contingency_table)) - tp - fp - fn
+    if (tp + tn + fp + fn) == 0:
+        return 0
 
-    for gt_cluster in ground_truth:
-        for er_cluster in result:
-            gt_cluster_pairs = set(_cluster_pairs(gt_cluster))
-            er_cluster_pairs = set(_cluster_pairs(er_cluster))
-            same_pair_count = len(gt_cluster_pairs & er_cluster_pairs)
-            only_gt_pair_count = len(gt_cluster_pairs - er_cluster_pairs)
-            only_er_pair_count = len(er_cluster_pairs - gt_cluster_pairs)
-            a += same_pair_count
-            b += only_gt_pair_count
-            c += only_er_pair_count
-            d += only_gt_pair_count + only_er_pair_count
-
-    return (a + d) / (a + b + c + d)
+    return (tp + tn) / (tp + tn + fp + fn)
 
 
 def adjusted_rand_index(
