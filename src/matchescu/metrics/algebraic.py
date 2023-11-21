@@ -5,13 +5,13 @@ from typing import Generator
 import numpy as np
 
 
-def twi(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> float:
+def twi(ground_truth: list[set], result: list[set]) -> float:
     numerator = len(ground_truth) * len(result)
     overlap = 0
     for gt_set in ground_truth:
         for res_set in result:
-            intersection = gt_set & res_set
-            overlap += len(intersection)
+            if len(res_set & gt_set) > 0:
+                overlap += 1
     denominator = overlap**2
     return numerator / denominator if denominator != 0 else 0
 
