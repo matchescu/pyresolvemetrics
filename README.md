@@ -1,2 +1,3 @@
-# entity-resolution-measurements
-Measurement functions used for entity resolution
+# PyResolveMetrics
+
+Efficient metrics implementations for evaluating entity resolution.
