@@ -1,7 +1,7 @@
 name: Update GitHub Pages
 on: [push]
 jobs:
-  build_latex:
+  build_documentation:
     runs-on: ubuntu-latest
     steps:
       - name: Install Poetry
