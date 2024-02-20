@@ -1,0 +1,172 @@
+\begin{thebibliography}{}
+
+\bibitem[Benjelloun et~al., 2009]{Ben2009Swoosh}
+Benjelloun, O., Garcia-Molina, H., Menestrina, D., Su, Q., Whang, S.~E., and Widom, J. (2009).
+\newblock Swoosh: a generic approach to entity resolution.
+\newblock {\em The VLDB Journal}, 18:255--276.
+
+\bibitem[Chen et~al., 2021]{chen2021careerexploration}
+Chen, H., Liu, F., Wen, Y., Ling, L., Chen, S., Ling, H., and Gu, X. (2021).
+\newblock Career exploration of high school students: Status quo, challenges, and coping model.
+\newblock {\em Frontiers in Psychology}, 12.
+
+\bibitem[Doan et~al., 2020]{magellan2020}
+Doan, A., Konda, P., Suganthan~GC, P., Govind, Y., Paulsen, D., Chandrasekhar, K., Martinkus, P., and Christie, M. (2020).
+\newblock Magellan: toward building ecosystems of entity matching solutions.
+\newblock {\em Communications of the ACM}, 63(8):83--91.
+
+\bibitem[Fellegi and Sunter, 1969]{fs1969}
+Fellegi, I.~P. and Sunter, A.~B. (1969).
+\newblock A theory for record linkage.
+\newblock {\em Journal of the American Statistical Association}, 64:1183--1210.
+
+\bibitem[Goga et~al., 2015]{Goga2015}
+Goga, O., Loiseau, P., Sommer, R., Teixeira, R., and Gummandi, K.~P. (2015).
+\newblock On the reliability of profile matching across large online social networks.
+\newblock In {\em On the Reliability of Profile Matching Across Large Online Social Networks}, Sydney.
+
+\bibitem[Halmos, 1960]{halmos1960naive}
+Halmos, P.~R. (1960).
+\newblock {\em Naive set theory}.
+\newblock van Nostrand.
+
+\bibitem[Huang et~al., 2006]{huang2006efficient}
+Huang, J., Ertekin, S., and Giles, C.~L. (2006).
+\newblock Efficient name disambiguation for large-scale databases.
+\newblock In {\em European conference on principles of data mining and knowledge discovery}, pages 536--544. Springer.
+
+\bibitem[Hubert and Arabie, 1985]{adjrand1985}
+Hubert, L. and Arabie, P. (1985).
+\newblock Comparing partitions.
+\newblock {\em Journal of classification}, 2:193--218.
+
+\bibitem[Jain, 1991]{jain1991profiling}
+Jain, R.~K. (1991).
+\newblock {\em The Art of Computer Systems Performance Analysis: Techniques for Experimental Design, Measurement, Simulation, and Modeling}, volume~1.
+\newblock Wiley New York, 1 edition.
+
+\bibitem[Jaro, 1989]{jaro1989advances}
+Jaro, M.~A. (1989).
+\newblock Advances in record-linkage methodology as applied to matching the 1985 census of tampa, florida.
+\newblock {\em Journal of the American Statistical Association}, 84(406):414--420.
+
+\bibitem[K{\"o}pcke et~al., 2009]{fever2009}
+K{\"o}pcke, H., Thor, A., and Rahm, E. (2009).
+\newblock Comparative evaluation of entity resolution approaches with fever.
+\newblock {\em Proceedings of the VLDB Endowment}, 2(2):1574--1577.
+
+\bibitem[K{\"o}pcke et~al., 2010]{vldb2010}
+K{\"o}pcke, H., Thor, A., and Rahm, E. (2010).
+\newblock Evaluation of entity resolution approaches on real-world match problems.
+\newblock {\em Proceedings of the VLDB Endowment}, 3(1-2):484--493.
+
+\bibitem[Li et~al., 2020]{deepm2020}
+Li, Y., Li, J., Suhara, Y., Doan, A., and Tan, W.-C. (2020).
+\newblock Deep entity matching with pre-trained language models.
+\newblock {\em arXiv preprint arXiv:2004.00584}.
+
+\bibitem[Maidasani et~al., 2012]{hitesh2012}
+Maidasani, H., Namata, G., Huang, B., and Getoor, L. (2012).
+\newblock Entity resolution evaluation measures.
+\newblock {\em University of Maryland, Tech. Rep.}
+
+\bibitem[Menestrina et~al., 2010]{Men10}
+Menestrina, D., Whang, S.~E., and Garcia-Molina, H. (2010).
+\newblock Evaluating entity resolution results.
+\newblock In {\em Evaluating entity resolution results}.
+
+\bibitem[Newcombe et~al., 1959]{newcombe1959}
+Newcombe, H.~B., Kennedy, J.~M., Axford, S.~J., and James, A.~P. (1959).
+\newblock Automatic linkage of vital records.
+\newblock {\em Science}, 130(3381):954--959.
+
+\bibitem[Obraczka et~al., 2021]{eager2021}
+Obraczka, D., Schuchart, J., and Rahm, E. (2021).
+\newblock Eager: embedding-assisted entity resolution for knowledge graphs.
+\newblock {\em arXiv preprint arXiv:2101.06126}.
+
+\bibitem[Olar, 2023]{expdata2023}
+Olar, A. (2023).
+\newblock Experiment data.
+\newblock \url{https://github.com/matchescu/experiment-data}.
+\newblock Online; accessed 25.10.2023.
+
+\bibitem[Papadakis et~al., 2017]{jedai2017}
+Papadakis, G., Tsekouras, L., Thanos, E., Giannakopoulos, G., Palpanas, T., and Koubarakis, M. (2017).
+\newblock Jedai: The force behind entity resolution.
+\newblock In {\em The Semantic Web: ESWC 2017 Satellite Events: ESWC 2017 Satellite Events, Portoro{\v{z}}, Slovenia, May 28--June 1, 2017, Revised Selected Papers 14}, pages 161--166. Springer.
+
+\bibitem[paulboosz, 2018]{ereval}
+paulboosz (2018).
+\newblock entity-resolution-evaluation.
+\newblock \url{https://github.com/entrepreneur-interet-general/entity-resolution-evaluation/README.md}.
+\newblock accessed 2023-09-22.
+
+\bibitem[PyResolveMetrics, 2023]{matchescu-er-metrics2023}
+PyResolveMetrics (2023).
+\newblock Pyresolvemetrics.
+\newblock \url{https://github.com/matchescu/er-metrics}.
+\newblock Online; Accessed: 26.11.2023.
+
+\bibitem[Qian et~al., 2017]{Qia17}
+Qian, K., Popa, L., and Prithviraj, S. (2017).
+\newblock Active learning for large-scale entity resolution.
+\newblock In {\em Active learning for large-scale entity resolution}, pages 1379--1388.
+
+\bibitem[Rand, 1971]{rand1971}
+Rand, W.~M. (1971).
+\newblock Objective criteria for the evaluation of clustering methods.
+\newblock {\em Journal of the American Statistical association}, 66(336):846--850.
+
+\bibitem[Sch{\"u}tze et~al., 2008]{manning2008}
+Sch{\"u}tze, H., Manning, C.~D., and Raghavan, P. (2008).
+\newblock {\em Introduction to information retrieval}, volume~39.
+\newblock Cambridge University Press Cambridge.
+
+\bibitem[Talburt et~al., 2007]{tal2007algebraic}
+Talburt, J., Wang, R., Hess, K., and Kuo, E. (2007).
+\newblock An algebraic approach to data quality metrics for entity resolution over large datasets.
+\newblock In {\em Information quality management: Theory and applications}, pages 1--22. IGI Global.
+
+\bibitem[Talburt, 2011]{Tal11}
+Talburt, J.~R. (2011).
+\newblock {\em Entity resolution and information quality}.
+\newblock Elsevier.
+
+\bibitem[University~of Arkansas Little~Rock, 2012]{oyster2012}
+University~of Arkansas Little~Rock, E. (2012).
+\newblock Oyster.
+\newblock \url{https://bitbucket.org/oysterer/oyster/src/master/README.md}.
+\newblock accessed 2023-09-22.
+
+\bibitem[Virtanen et~al., 2020]{nmeth2020scipy}
+Virtanen, P., Gommers, R., Oliphant, T.~E., Haberland, M., Reddy, T., Cournapeau, D., Burovski, E., Peterson, P., Weckesser, W., Bright, J., {van der Walt}, S.~J., Brett, M., Wilson, J., Millman, K.~J., Mayorov, N., Nelson, A. R.~J., Jones, E., Kern, R., Larson, E., Carey, C.~J., Polat, {\.I}., Feng, Y., Moore, E.~W., {VanderPlas}, J., Laxalde, D., Perktold, J., Cimrman, R., Henriksen, I., Quintero, E.~A., Harris, C.~R., Archibald, A.~M., Ribeiro, A.~H., Pedregosa, F., {van Mulbregt}, P., and {SciPy 1.0 Contributors} (2020).
+\newblock {{SciPy} 1.0: Fundamental Algorithms for Scientific Computing in Python}.
+\newblock {\em Nature Methods}, 17:261--272.
+
+\bibitem[Warrens and van~der Hoef, 2022]{warrens2022understanding}
+Warrens, M.~J. and van~der Hoef, H. (2022).
+\newblock Understanding the adjusted rand index and other partition comparison indices based on counting object pairs.
+\newblock {\em Journal of Classification}, 39(3):487--509.
+
+\bibitem[Winkler, 1990]{winkler1990}
+Winkler, W.~E. (1990).
+\newblock String comparator metrics and enhanced decision rules in the fellegi-sunter model of record linkage.
+\newblock {\em Non-Journal}.
+
+\bibitem[Winkler, 2014]{winkler2014}
+Winkler, W.~E. (2014).
+\newblock Matching and record linkage.
+\newblock {\em WIREs Computational Statistics}, 6(5):313--325.
+
+\bibitem[Xiao et~al., 2011]{ppjoin}
+Xiao, C., Wang, W., Lin, X., Yu, J.~X., and Wang, G. (2011).
+\newblock Efficient similarity joins for near-duplicate detection.
+\newblock {\em ACM Transactions on Database Systems (TODS)}, 36(3):1--41.
+
+\bibitem[Yeung and Ruzzo, 2001]{adjrand2001}
+Yeung, K.~Y. and Ruzzo, W.~L. (2001).
+\newblock Details of the adjusted rand index and clustering algorithms, supplement to the paper an empirical study on principal component analysis for clustering gene expression data.
+\newblock {\em Bioinformatics}, 17(9):763--774.
+
+\end{thebibliography}

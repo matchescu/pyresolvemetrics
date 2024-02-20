@@ -1,0 +1,30 @@
+\begin{thebibliography}{}
+
+\bibitem[Foundation, 2022]{python}
+Foundation, P.~S. (2022).
+\newblock Python language reference, version 3.11.
+\newblock \url{https://www.python.org}.
+\newblock Online; Accessed: 18.11.2023.
+
+\bibitem[Gregg, 2013]{flamegraphs2013}
+Gregg, B. (2013).
+\newblock Blazing performance with flame graphs.
+\newblock In {\em Blazing Performance with Flame Graphs}, Washington, D.C. USENIX Association.
+
+\bibitem[Harris et~al., 2020]{harris2020numpy}
+Harris, C.~R., Millman, K.~J., Van Der~Walt, S.~J., Gommers, R., Virtanen, P., Cournapeau, D., Wieser, E., Taylor, J., Berg, S., Smith, N.~J., et~al. (2020).
+\newblock Array programming with numpy.
+\newblock {\em Nature}, 585(7825):357--362.
+
+\bibitem[Ivan~Levkivskyi, 2017]{pyproto2017}
+Ivan~Levkivskyi, Jukka~Lehtosalo, L.~L. (2017).
+\newblock Pep-544 - protocols: Structural subtyping (static duck typing).
+\newblock \url{https://peps.python.org/pep-0544/}.
+\newblock Online; Accessed: 26.11.2023.
+
+\bibitem[Virtanen et~al., 2020]{nmeth2020scipy}
+Virtanen, P., Gommers, R., Oliphant, T.~E., Haberland, M., Reddy, T., Cournapeau, D., Burovski, E., Peterson, P., Weckesser, W., Bright, J., {van der Walt}, S.~J., Brett, M., Wilson, J., Millman, K.~J., Mayorov, N., Nelson, A. R.~J., Jones, E., Kern, R., Larson, E., Carey, C.~J., Polat, {\.I}., Feng, Y., Moore, E.~W., {VanderPlas}, J., Laxalde, D., Perktold, J., Cimrman, R., Henriksen, I., Quintero, E.~A., Harris, C.~R., Archibald, A.~M., Ribeiro, A.~H., Pedregosa, F., {van Mulbregt}, P., and {SciPy 1.0 Contributors} (2020).
+\newblock {{SciPy} 1.0: Fundamental Algorithms for Scientific Computing in Python}.
+\newblock {\em Nature Methods}, 17:261--272.
+
+\end{thebibliography}
