@@ -21,10 +21,14 @@ jobs:
         run: poetry install
       - name: Compile Sphinx
         run: make html
-      - name: Upload PDF
-        uses: actions/upload-artifact@v3
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: articles
           path: |
             doc/article/[0-9][0-9]*.pdf
             dist/html/**/*.*
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
