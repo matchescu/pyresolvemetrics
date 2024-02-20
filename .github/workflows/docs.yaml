@@ -1,9 +1,13 @@
-name: Build LaTeX
+name: Update GitHub Pages
 on: [push]
 jobs:
   build_latex:
     runs-on: ubuntu-latest
     steps:
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: 1.7.1
       - name: Checkout
         uses: actions/checkout@v3
       - name: Compile LaTeX
@@ -12,9 +16,9 @@ jobs:
           root_file: |
             01_article.tex
             02_appendix.tex
-          working_directory: doc/
+          working_directory: doc/article
       - name: Upload PDF
         uses: actions/upload-artifact@v3
         with:
-          name: PDF
+          name: articles
           path: doc/**/*.pdf
