@@ -23,12 +23,14 @@ jobs:
         run: make html
       - name: Setup Pages
         uses: actions/configure-pages@v4
+      - name: Prepare Pages
+        run: |
+          mkdir -p dist/html/article &&\
+          cp -v doc/article/0*.pdf dist/html/article/
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: |
-            doc/article/[0-9][0-9]*.pdf
-            dist/html/**/*.*
+          path: dist/html/
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
