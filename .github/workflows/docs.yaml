@@ -17,8 +17,12 @@ jobs:
             01_article.tex
             02_appendix.tex
           working_directory: doc/article
+      - name: Compile Sphinx
+        run: make html
       - name: Upload PDF
         uses: actions/upload-artifact@v3
         with:
           name: articles
-          path: doc/**/*.pdf
+          path: |
+            doc/article/[0-9][0-9]*.pdf
+            dist/html/**/*.*
