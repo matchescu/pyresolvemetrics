@@ -17,6 +17,8 @@ jobs:
             01_article.tex
             02_appendix.tex
           working_directory: doc/article
+      - name: Install Dependencies
+        run: poetry install
       - name: Compile Sphinx
         run: make html
       - name: Upload PDF
