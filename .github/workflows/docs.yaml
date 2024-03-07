@@ -1,0 +1,39 @@
+name: Update GitHub Pages
+on: [push]
+jobs:
+  build_documentation:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      pages: write
+    steps:
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: 1.7.1
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Compile LaTeX
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: |
+            01_article.tex
+            02_appendix.tex
+          working_directory: doc/article
+      - name: Install Dependencies
+        run: poetry install
+      - name: Compile Sphinx
+        run: make html
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      - name: Prepare Pages
+        run: |
+          mkdir -p dist/html/article &&\
+          cp -v doc/article/0*.pdf dist/html/article/
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/html/
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
