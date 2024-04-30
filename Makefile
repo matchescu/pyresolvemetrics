@@ -11,3 +11,8 @@ help:
 
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+
+.venv/bin/pytest:
+	poetry install
+test: .venv/bin/pytest
+	poetry run pytest -m tests

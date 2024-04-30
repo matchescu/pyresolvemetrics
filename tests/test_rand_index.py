@@ -1,6 +1,6 @@
 import pytest
 
-from matchescu.metrics.algebraic import rand_index
+from pyresolvemetrics.algebraic import rand_index
 
 
 def test_rand_empty_returns_zero():

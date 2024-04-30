@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "py-resolve-metrics"
+name = "pyresolvemetrics"
 version = "0.2.0"
 description = "Entity resolution metrics library"
 authors = ["Andrei Olar <andrei.olar@ubbcluj.ro>"]
 readme = "README.md"
-packages = [{include = "matchescu", from="src"}]
+packages = [{include = "pyresolvemetrics", from="src"}]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"

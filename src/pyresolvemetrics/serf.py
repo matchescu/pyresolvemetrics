@@ -24,8 +24,8 @@ def _flatten_record_values(record: Record) -> Generator[Any, None, None]:
             yield value
 
 
-def gmd_slice(result: Iterable[Record], standard: Iterable[Record], f_split: Callable[[int, int], float],
-              f_merge: Callable[[int, int], float]) -> float:
+def _gmd_slice(result: Iterable[Record], standard: Iterable[Record], f_split: Callable[[int, int], float],
+               f_merge: Callable[[int, int], float]) -> float:
     """Generalized merge distance *slice* algorithm.
 
     This algorithm is used to compute the edit distance between two lists
@@ -92,7 +92,7 @@ def gmd_slice(result: Iterable[Record], standard: Iterable[Record], f_split: Cal
 
 
 def basic_merge_distance(result: list[tuple], standard: list[tuple]) -> float:
-    return gmd_slice(result, standard, lambda x, y: 1, lambda x, y: 1)
+    return _gmd_slice(result, standard, lambda x, y: 1, lambda x, y: 1)
 
 
 def _compute_partition_of_single_records(records: Iterable[Record]) -> Iterable[Any]:
@@ -114,8 +114,8 @@ def _zero(*_):
 
 def pairwise_precision(result: list[tuple], standard: list[tuple]) -> float:
     gt_denormalized = _compute_partition_of_single_records(standard)
-    bmd = gmd_slice(result, standard, _product, _zero)
-    denorm_precision = gmd_slice(result, gt_denormalized, _product, _zero)
+    bmd = _gmd_slice(result, standard, _product, _zero)
+    denorm_precision = _gmd_slice(result, gt_denormalized, _product, _zero)
 
     if denorm_precision == 0:
         return 0.0
@@ -125,8 +125,8 @@ def pairwise_precision(result: list[tuple], standard: list[tuple]) -> float:
 
 def pairwise_recall(result: list[tuple], standard: list[tuple]) -> float:
     gt_denormalized = _compute_partition_of_single_records(standard)
-    bmd = gmd_slice(result, standard, f_split=_zero, f_merge=_product)
-    denorm_recall = gmd_slice(gt_denormalized, standard, f_split=_zero, f_merge=_product)
+    bmd = _gmd_slice(result, standard, f_split=_zero, f_merge=_product)
+    denorm_recall = _gmd_slice(gt_denormalized, standard, f_split=_zero, f_merge=_product)
 
     if (bmd == 0 and denorm_recall == 0) or denorm_recall == 0:
         return 0.0
@@ -152,4 +152,4 @@ def variation_of_information(result: list[tuple], standard: list[tuple]) -> floa
     def vi_cost_function(x: float, y: float) -> float:
         return h(x + y, distinct_standard_items) - h(x, distinct_standard_items) - h(y, distinct_standard_items)
 
-    return gmd_slice(result, standard, vi_cost_function, vi_cost_function)
+    return _gmd_slice(result, standard, vi_cost_function, vi_cost_function)

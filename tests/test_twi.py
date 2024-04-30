@@ -1,6 +1,6 @@
 import pytest
 
-from matchescu.metrics.algebraic import twi
+from pyresolvemetrics.algebraic import twi
 
 
 def test_empty_set():
