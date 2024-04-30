@@ -15,4 +15,4 @@ help:
 .venv/bin/pytest:
 	poetry install
 test: .venv/bin/pytest
-	poetry run pytest -m tests
+	poetry run python -m pytest tests/
