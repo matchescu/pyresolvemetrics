@@ -14,5 +14,12 @@ help:
 
 .venv/bin/pytest:
 	poetry install
+
 test: .venv/bin/pytest
 	poetry run python -m pytest tests/
+
+clean:
+	rm -rfv .venv $(BUILDDIR)
+
+rebuild: clean test
+	@echo "done."
