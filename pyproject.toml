@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyresolvemetrics"
-version = "0.2.0"
+version = "0.2.1"
 description = "Entity resolution metrics library"
 authors = ["Andrei Olar <andrei.olar@ubbcluj.ro>"]
 readme = "README.md"
