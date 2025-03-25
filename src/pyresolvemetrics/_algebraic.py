@@ -8,6 +8,22 @@ from pyresolvemetrics._utils import _safe_division
 
 
 def twi(ground_truth: frozenset[frozenset], result: frozenset[frozenset]) -> float:
+    """Compute the Talburt-Wang index.
+
+    The Talburt-Wang Index (TWI) evaluates the similarity between two partitions
+    by considering the number of overlapping subsets. It is calculated as the
+    ratio of the number of overlaps to the total number of subsets in both
+    partitions.
+
+    :param ground_truth: a set of sets. Represents the ideal algebraic partition
+        induced by the entity resolution relation over an algebraic set.
+    :param result: a set of sets. Represents the partition produced by the
+        entity resolution task over the same algebraic set as the ground truth.
+
+    :returns: a floating point value between 0.0 and 1.0. A TWI of 1 indicates
+        identical partitions, while lower values suggest lesser degrees of
+        similarity.
+    """
     numerator = len(ground_truth) * len(result)
     overlap = reduce(
         lambda x, _: x + 1,
@@ -36,6 +52,21 @@ def _comb_n_2(value: int) -> int:
 def rand_index(
     ground_truth: frozenset[frozenset], result: frozenset[frozenset]
 ) -> float:
+    r"""Compute the Rand index.
+
+    The Rand Index is a measure of similarity between two data clusterings,
+    assessing the agreement of element pairs. It calculates the proportion of
+    pairs that are either clustered together or separately in both partitions
+    relative to all possible pairs.
+
+    :param ground_truth: a set of sets. Represents the ideal algebraic partition
+        induced by the entity resolution relation over an algebraic set.
+    :param result: a set of sets. Represents the partition produced by the
+        entity resolution task over the same algebraic set as the ground truth.
+    :returns: a floating point value between 0.0 and 1.0. A Rand index of 1
+        indicates perfect pairwise agreement.
+    """
+
     contingency_table = np.array(
         [
             [len(gt_cluster & er_cluster) for er_cluster in result]
@@ -61,6 +92,24 @@ def rand_index(
 def adjusted_rand_index(
     ground_truth: frozenset[frozenset], result: frozenset[frozenset]
 ) -> float:
+    """Compute the adjusted Rand index.
+
+    The Adjusted Rand Index (ARI) modifies the Rand Index to account for chance
+    grouping. It adjusts the baseline of the Rand Index, ensuring that random
+    label assignments yield an expected ARI of 0. This adjustment provides a
+    more accurate assessment of clustering similarity, especially when dealing
+    with random or arbitrary partitions.
+
+    :param ground_truth: a set of sets. Represents the ideal algebraic partition
+        induced by the entity resolution relation over an algebraic set.
+    :param result: a set of sets. Represents the partition produced by the
+        entity resolution task over the same algebraic set as the ground truth.
+
+    :returns: a floating point value between -1.0 and 1.0. An ARI of 1
+        indicates perfect pairwise agreement. Negative values indicate that the
+        agreement between clusters is less than the one expected to occur
+        through random chance (i.e. there is a significant disagreement).
+    """
     initial_data_size = reduce(
         lambda count, cluster: count + len(cluster), ground_truth, 0
     )
@@ -96,6 +145,21 @@ def _partition_pairs(
 def pair_precision(
     ground_truth: frozenset[frozenset], result: frozenset[frozenset]
 ) -> float:
+    r"""Compute the pair precision over entity resolution clusters.
+
+    Pair precision is defined as the number of pairwise combinations of elements
+    that are common between the ``ground_truth`` (G) and the ``result`` (R),
+    divided by the number of pairwise combinations of elements in `R`.
+
+    .. math::
+
+        |Pairs(G) \cap Pairs(R)| \over |Pairs(R)|
+
+    :param ground_truth: a set of sets. Represents the ideal algebraic partition
+        induced by the entity resolution relation over an algebraic set.
+    :param result: a set of sets. Represents the partition produced by the
+        entity resolution task over the same algebraic set as the ground truth.
+    """
     gt_pairs = set(_partition_pairs(ground_truth))
     res_pairs = set(_partition_pairs(result))
     return _safe_division(len(gt_pairs & res_pairs), len(res_pairs))
@@ -104,6 +168,21 @@ def pair_precision(
 def pair_recall(
     ground_truth: frozenset[frozenset], result: frozenset[frozenset]
 ) -> float:
+    r"""Compute the pair recall over entity resolution clusters.
+
+    Pair recall is defined as the number of pairwise combinations of elements
+    that are common between the ``ground_truth`` (G) and the ``result`` (R),
+    divided by the number of pairwise combinations of elements in `G`.
+
+    .. math::
+
+        |Pairs(G) \cap Pairs(R)| \over |Pairs(G)|
+
+    :param ground_truth: a set of sets. Represents the ideal algebraic partition
+        induced by the entity resolution relation over an algebraic set.
+    :param result: a set of sets. Represents the partition produced by the
+        entity resolution task over the same algebraic set as the ground truth.
+    """
     gt_pairs = set(_partition_pairs(ground_truth))
     res_pairs = set(_partition_pairs(result))
     return _safe_division(len(gt_pairs & res_pairs), len(gt_pairs))
@@ -112,6 +191,20 @@ def pair_recall(
 def pair_comparison_measure(
     ground_truth: frozenset[frozenset], result: frozenset[frozenset]
 ) -> float:
+    r"""Compute the pair comparison measure.
+
+    The pair comparison measure is defined as the harmonic mean between pair
+    precision (pp) and pair recall (pr).
+
+    .. math::
+
+        2 \cdot pp \cdot pr \over pp + pr
+
+    :param ground_truth: a set of sets. Represents the ideal algebraic partition
+        induced by the entity resolution relation over an algebraic set.
+    :param result: a set of sets. Represents the partition produced by the
+        entity resolution task over the same algebraic set as the ground truth.
+    """
     pp = pair_precision(ground_truth, result)
     pr = pair_recall(ground_truth, result)
     return _safe_division(2 * pp * pr, pp + pr)
@@ -120,18 +213,62 @@ def pair_comparison_measure(
 def cluster_precision(
     ground_truth: frozenset[frozenset], result: frozenset[frozenset]
 ) -> float:
+    r"""Compute the cluster precision over entity resolution clusters.
+
+    Cluster precision is defined as the number of common clusters between
+    the ``ground_truth`` (G) and the ``result`` (R), divided by the number of
+    clusters in `R`.
+
+    .. math::
+
+        |Clusters(G) \cap Clusters(R)| \over |Clusters(R)|
+
+    :param ground_truth: a set of sets. Represents the ideal algebraic partition
+        induced by the entity resolution relation over an algebraic set.
+    :param result: a set of sets. Represents the partition produced by the
+        entity resolution task over the same algebraic set as the ground truth.
+    """
     return _safe_division(len(ground_truth & result), len(result))
 
 
 def cluster_recall(
     ground_truth: frozenset[frozenset], result: frozenset[frozenset]
 ) -> float:
+    r"""Compute the cluster recall over entity resolution clusters.
+
+    Cluster recall is defined as the number of common clusters between
+    the ``ground_truth`` (G) and the ``result`` (R), divided by the number of
+    clusters in `G`.
+
+    .. math::
+
+        |Clusters(G) \cap Clusters(R)| \over |Clusters(G)|
+
+    :param ground_truth: a set of sets. Represents the ideal algebraic partition
+        induced by the entity resolution relation over an algebraic set.
+    :param result: a set of sets. Represents the partition produced by the
+        entity resolution task over the same algebraic set as the ground truth.
+    """
     return _safe_division(len(ground_truth & result), len(ground_truth))
 
 
 def cluster_comparison_measure(
     ground_truth: frozenset[frozenset], result: frozenset[frozenset]
 ) -> float:
+    r"""Compute the cluster comparison measure.
+
+    The cluster comparison measure is defined as the harmonic mean between
+    cluster precision (cp) and cluster recall (cr).
+
+    .. math::
+
+        2 \cdot cp \cdot cr \over cp + cr
+
+    :param ground_truth: a set of sets. Represents the ideal algebraic partition
+        induced by the entity resolution relation over an algebraic set.
+    :param result: a set of sets. Represents the partition produced by the
+        entity resolution task over the same algebraic set as the ground truth.
+    """
     cp = cluster_precision(ground_truth, result)
     cr = cluster_recall(ground_truth, result)
     return _safe_division(2 * cp * cr, cp + cr)
