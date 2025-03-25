@@ -62,7 +62,7 @@ def recall(ground_truth: set[Pair], result: set[Pair]) -> float:
     return _safe_division(tp, tp + fn)
 
 
-def f1(ground_truth: set[Pair], er_result: set[Pair]) -> float:
+def f1(ground_truth: set[Pair], result: set[Pair]) -> float:
     r"""Evaluate the F1 score of an entity matching task.
 
     The F1 score is computed as the harmonic mean of precision (p) and recall (r).
@@ -77,6 +77,6 @@ def f1(ground_truth: set[Pair], er_result: set[Pair]) -> float:
         a pair of identifiers for entity references which were output by an
         entity matcher.
     """
-    p = precision(ground_truth, er_result)
-    r = recall(ground_truth, er_result)
+    p = precision(ground_truth, result)
+    r = recall(ground_truth, result)
     return _safe_division(2 * p * r, p + r)
