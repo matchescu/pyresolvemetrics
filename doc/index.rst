@@ -6,8 +6,8 @@
 PyResolveMetrics
 ================
 
-``PyResolveMetrics`` is a Python package that is used to measure the quality of
-the outcome of entity resolution tasks.
+The ``pyresolvemetrics`` library is aimed at evaluating entity resolution quality.
+It provides both statistical and clustering metrics.
 
 This online documentation is accompanied by:
 
@@ -15,3 +15,8 @@ This online documentation is accompanied by:
    * an `appendix <article/02_appendix.pdf>`_ with useful information such as
      performance benchmarks for the library.
 
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   api_reference
