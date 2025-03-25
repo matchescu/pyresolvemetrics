@@ -1,8 +1,14 @@
 VENV := $(shell poetry env info --path 2>/dev/null || echo ".venv")
 TIMESTAMP := $(VENV)/.poetry_installed
 PYTHON_VERSION := 3.12
+SPHINXOPTS    ?=
+SPHINXBUILD   ?= poetry run sphinx-build
+SOURCEDIR     = doc
+BUILDDIR      = dist
+
 
 .PHONY: check-deps bump-patch bump-minor bump-major bump-release bump-prepatch bump-preminor bump-premajor bump-prerelease re-tag
+
 
 # Ensure dependencies are available
 check-deps:
@@ -78,3 +84,6 @@ new-tag:
 	git push --tags &&\
 	echo "Pushed tag v$$VERSION" ||\
 	echo "Failed to push tag v$$VERSION"
+
+html:
+	@$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)

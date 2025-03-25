@@ -1,30 +1,31 @@
 import itertools
 from functools import reduce
-from typing import Generator
+from typing import Generator, Hashable
 
 import numpy as np
 
+from pyresolvemetrics._utils import _safe_division
 
-def twi(ground_truth: list[set], result: list[set]) -> float:
+
+def twi(ground_truth: frozenset[frozenset], result: frozenset[frozenset]) -> float:
     numerator = len(ground_truth) * len(result)
-    overlap = 0
-    for gt_set in ground_truth:
-        for res_set in result:
-            if len(res_set & gt_set) > 0:
-                overlap += 1
+    overlap = reduce(
+        lambda x, _: x + 1,
+        filter(
+            lambda intersection: len(intersection) > 0,
+            itertools.starmap(
+                lambda x, y: x & y, itertools.product(ground_truth, result)
+            ),
+        ),
+        0,
+    )
     denominator = overlap**2
     return numerator / denominator if denominator != 0 else 0
 
 
-def _get_unique_identifiers(partition: list[set[tuple]]) -> list[int]:
-    result = {}
-    for cluster in partition:
-        key = frozenset(cluster)
-        result[key] = hash(key)
-    return list(result.values())
-
-
-def _cluster_pairs(cluster: set[tuple]) -> Generator[tuple, None, None]:
+def _cluster_pairs(
+    cluster: frozenset,
+) -> Generator[tuple[Hashable, Hashable], None, None]:
     yield from itertools.combinations(cluster, 2)
 
 
@@ -32,7 +33,9 @@ def _comb_n_2(value: int) -> int:
     return (value * (value - 1)) // 2
 
 
-def rand_index(ground_truth: list[set], result: list[set]) -> float:
+def rand_index(
+    ground_truth: frozenset[frozenset], result: frozenset[frozenset]
+) -> float:
     contingency_table = np.array(
         [
             [len(gt_cluster & er_cluster) for er_cluster in result]
@@ -55,7 +58,9 @@ def rand_index(ground_truth: list[set], result: list[set]) -> float:
     return (tp + tn) / (tp + tn + fp + fn)
 
 
-def adjusted_rand_index(ground_truth: list[set], result: list[set]) -> float:
+def adjusted_rand_index(
+    ground_truth: frozenset[frozenset], result: frozenset[frozenset]
+) -> float:
     initial_data_size = reduce(
         lambda count, cluster: count + len(cluster), ground_truth, 0
     )
@@ -83,67 +88,50 @@ def adjusted_rand_index(ground_truth: list[set], result: list[set]) -> float:
 
 
 def _partition_pairs(
-    input_data: list[set[tuple]],
-) -> Generator[tuple[tuple], None, None]:
-    for cluster in input_data:
-        yield from _cluster_pairs(cluster)
+    input_data: frozenset[frozenset],
+) -> Generator[tuple[Hashable, Hashable], None, None]:
+    yield from itertools.chain.from_iterable(map(_cluster_pairs, input_data))
 
 
-def pair_precision(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> float:
+def pair_precision(
+    ground_truth: frozenset[frozenset], result: frozenset[frozenset]
+) -> float:
     gt_pairs = set(_partition_pairs(ground_truth))
     res_pairs = set(_partition_pairs(result))
-    if len(res_pairs) == 0:
-        # no pairs were retrieved -> precision = 0
-        return 0.0
-    return len(gt_pairs & res_pairs) / (len(res_pairs))
+    return _safe_division(len(gt_pairs & res_pairs), len(res_pairs))
 
 
-def pair_recall(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> float:
+def pair_recall(
+    ground_truth: frozenset[frozenset], result: frozenset[frozenset]
+) -> float:
     gt_pairs = set(_partition_pairs(ground_truth))
     res_pairs = set(_partition_pairs(result))
-    return len(gt_pairs & res_pairs) / (len(gt_pairs))
+    return _safe_division(len(gt_pairs & res_pairs), len(gt_pairs))
 
 
 def pair_comparison_measure(
-    ground_truth: list[set[tuple]], result: list[set[tuple]]
+    ground_truth: frozenset[frozenset], result: frozenset[frozenset]
 ) -> float:
     pp = pair_precision(ground_truth, result)
     pr = pair_recall(ground_truth, result)
-    if pp + pr == 0:
-        return 0.0
-
-    return (2 * pp * pr) / (pp + pr)
-
-
-def _cluster(input_data: list[set[tuple]]) -> Generator[tuple[tuple], None, None]:
-    return (tuple(v for v in partition_class) for partition_class in input_data)
+    return _safe_division(2 * pp * pr, pp + pr)
 
 
 def cluster_precision(
-    ground_truth: list[set[tuple]], result: list[set[tuple]]
+    ground_truth: frozenset[frozenset], result: frozenset[frozenset]
 ) -> float:
-    gt_cluster = set(_cluster(ground_truth))
-    res_cluster = set(_cluster(result))
-    if len(res_cluster) == 0:
-        # if no clusters were retrieved, the precision is zero
-        return 0
-
-    return len(gt_cluster & res_cluster) / len(res_cluster)
+    return _safe_division(len(ground_truth & result), len(result))
 
 
-def cluster_recall(ground_truth: list[set[tuple]], result: list[set[tuple]]) -> float:
-    gt_cluster = set(_cluster(ground_truth))
-    res_cluster = set(_cluster(result))
-
-    return len(gt_cluster & res_cluster) / len(gt_cluster)
+def cluster_recall(
+    ground_truth: frozenset[frozenset], result: frozenset[frozenset]
+) -> float:
+    return _safe_division(len(ground_truth & result), len(ground_truth))
 
 
 def cluster_comparison_measure(
-    ground_truth: list[set[tuple]], result: list[set[tuple]]
+    ground_truth: frozenset[frozenset], result: frozenset[frozenset]
 ) -> float:
     cp = cluster_precision(ground_truth, result)
     cr = cluster_recall(ground_truth, result)
-    if cp + cr == 0:
-        return 0.0
-
-    return (2 * cp * cr) / (cp + cr)
+    return _safe_division(2 * cp * cr, cp + cr)
