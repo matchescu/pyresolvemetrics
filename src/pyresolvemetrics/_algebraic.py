@@ -4,7 +4,7 @@ from typing import Generator, Hashable
 
 import numpy as np
 
-from pyresolvemetrics._utils import _safe_division
+from pyresolvemetrics._utils import _safe_division, _symmetric_hash
 
 
 def twi(ground_truth: frozenset[frozenset], result: frozenset[frozenset]) -> float:
@@ -136,10 +136,12 @@ def _cluster_pairs(
     yield from itertools.combinations(cluster, 2)
 
 
-def _partition_pairs(
+def _partition_pair_hashes(
     input_data: frozenset[frozenset],
-) -> Generator[tuple[Hashable, Hashable], None, None]:
-    yield from itertools.chain.from_iterable(map(_cluster_pairs, input_data))
+) -> Generator[int, None, None]:
+    yield from map(
+        _symmetric_hash, itertools.chain.from_iterable(map(_cluster_pairs, input_data))
+    )
 
 
 def pair_precision(
@@ -160,8 +162,8 @@ def pair_precision(
     :param result: a set of sets. Represents the partition produced by the
         entity resolution task over the same algebraic set as the ground truth.
     """
-    gt_pairs = set(_partition_pairs(ground_truth))
-    res_pairs = set(_partition_pairs(result))
+    gt_pairs = set(_partition_pair_hashes(ground_truth))
+    res_pairs = set(_partition_pair_hashes(result))
     return _safe_division(len(gt_pairs & res_pairs), len(res_pairs))
 
 
@@ -183,8 +185,8 @@ def pair_recall(
     :param result: a set of sets. Represents the partition produced by the
         entity resolution task over the same algebraic set as the ground truth.
     """
-    gt_pairs = set(_partition_pairs(ground_truth))
-    res_pairs = set(_partition_pairs(result))
+    gt_pairs = set(_partition_pair_hashes(ground_truth))
+    res_pairs = set(_partition_pair_hashes(result))
     return _safe_division(len(gt_pairs & res_pairs), len(gt_pairs))
 
 
