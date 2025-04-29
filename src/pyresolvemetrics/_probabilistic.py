@@ -1,22 +1,20 @@
 from typing import Hashable
 
-from pyresolvemetrics._utils import _safe_division
+from pyresolvemetrics._utils import _safe_division, _symmetric_hash
 
 Pair = tuple[Hashable, Hashable]
 
 
-def _true_positives(ground_truth: set[Pair], result: set[Pair]) -> int:
-    return sum(1 for x, y in result if (x, y) in ground_truth or (y, x) in ground_truth)
+def _true_positives(ground_truth: set[int], result: set[int]) -> int:
+    return sum(1 for x in result if x in ground_truth)
 
 
-def _false_positives(ground_truth: set[Pair], result: set[Pair]) -> int:
-    return sum(
-        1 for x, y in result if not ((x, y) in ground_truth or (y, x) in ground_truth)
-    )
+def _false_positives(ground_truth: set[int], result: set[int]) -> int:
+    return sum(1 for x in result if x not in ground_truth)
 
 
-def _false_negatives(ground_truth: set[Pair], result: set[Pair]) -> int:
-    return sum(1 for x, y in ground_truth if not ((x, y) in result or (y, x) in result))
+def _false_negatives(ground_truth: set[int], result: set[int]) -> int:
+    return sum(1 for x in ground_truth if x not in result)
 
 
 def precision(ground_truth: set[Pair], result: set[Pair]) -> float:
@@ -36,8 +34,10 @@ def precision(ground_truth: set[Pair], result: set[Pair]) -> float:
         a pair of identifiers for entity references which were output by an
         entity matcher.
     """
-    tp = _true_positives(ground_truth, result)
-    fp = _false_positives(ground_truth, result)
+    gt_hashes = set(map(_symmetric_hash, ground_truth))
+    result_hashes = set(map(_symmetric_hash, result))
+    tp = _true_positives(gt_hashes, result_hashes)
+    fp = _false_positives(gt_hashes, result_hashes)
     return _safe_division(tp, tp + fp)
 
 
@@ -59,8 +59,10 @@ def recall(ground_truth: set[Pair], result: set[Pair]) -> float:
         a pair of identifiers for entity references which were output by an
         entity matcher.
     """
-    tp = _true_positives(ground_truth, result)
-    fn = _false_negatives(ground_truth, result)
+    gt_hashes = set(map(_symmetric_hash, ground_truth))
+    result_hashes = set(map(_symmetric_hash, result))
+    tp = _true_positives(gt_hashes, result_hashes)
+    fn = _false_negatives(gt_hashes, result_hashes)
     return _safe_division(tp, tp + fn)
 
 

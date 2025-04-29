@@ -39,12 +39,6 @@ def twi(ground_truth: frozenset[frozenset], result: frozenset[frozenset]) -> flo
     return numerator / denominator if denominator != 0 else 0
 
 
-def _cluster_pairs(
-    cluster: frozenset,
-) -> Generator[tuple[Hashable, Hashable], None, None]:
-    yield from itertools.combinations(cluster, 2)
-
-
 def _comb_n_2(value: int) -> int:
     return (value * (value - 1)) // 2
 
@@ -134,6 +128,12 @@ def adjusted_rand_index(
     ari = 2 * (x - z) / ((y + w) - 2 * z)
 
     return ari
+
+
+def _cluster_pairs(
+    cluster: frozenset,
+) -> Generator[tuple[Hashable, Hashable], None, None]:
+    yield from itertools.combinations(cluster, 2)
 
 
 def _partition_pairs(
