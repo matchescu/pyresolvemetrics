@@ -6,15 +6,17 @@ Pair = tuple[Hashable, Hashable]
 
 
 def _true_positives(ground_truth: set[Pair], result: set[Pair]) -> int:
-    return sum(1 for cand in result if cand in ground_truth)
+    return sum(1 for x, y in result if (x, y) in ground_truth or (y, x) in ground_truth)
 
 
 def _false_positives(ground_truth: set[Pair], result: set[Pair]) -> int:
-    return sum(1 for cand in result if cand not in ground_truth)
+    return sum(
+        1 for x, y in result if not ((x, y) in ground_truth or (y, x) in ground_truth)
+    )
 
 
-def _false_negatives(ground_truth: set[Pair], er_result: set[Pair]) -> int:
-    return sum(1 for true_match in ground_truth if true_match not in er_result)
+def _false_negatives(ground_truth: set[Pair], result: set[Pair]) -> int:
+    return sum(1 for x, y in ground_truth if not ((x, y) in result or (y, x) in result))
 
 
 def precision(ground_truth: set[Pair], result: set[Pair]) -> float:
